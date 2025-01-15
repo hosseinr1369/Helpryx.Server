@@ -95,7 +95,7 @@ namespace Api.Controllers
             {
                 return BadRequest();
             }
-            profile.PasswordHash = HashGenerator.SHA1(profile.PasswordHash);
+            //profile.PasswordHash = HashGenerator.SHA1(profile.PasswordHash);
             _context.Entry(profile).State = EntityState.Modified;
 
             try
@@ -276,6 +276,54 @@ namespace Api.Controllers
             }
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutProfileTbtest(int id, IFormFile file)
+        {
+            try
+            {
+                if (file == null || file.Length == 0)
+                    return BadRequest("No file uploaded.");
+
+                // Save the file
+                var fileName = Path.GetFileNameWithoutExtension(file.FileName);
+                var fileExtension = Path.GetExtension(file.FileName);
+                var hashedFileName = Guid.NewGuid().ToString().Replace("-", "") + fileExtension;
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "files/tbtests", hashedFileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                var fileUrl = $"{Request.Scheme}://{Request.Host}/files/tbtests/{hashedFileName}";
+                var existingProfile = await _context.profiles.FindAsync(id);
+
+                if (existingProfile == null)
+                {
+                    return NotFound();
+                }
+
+                if (existingProfile.ResumeAddress != "")
+                {
+                    Uri uri = new Uri(existingProfile.ResumeAddress);
+                    string filename = Path.GetFileName(uri.LocalPath);
+                    string FullPath = Path.Combine(Directory.GetCurrentDirectory(), "files\\tbtests", filename);
+                    if (System.IO.File.Exists(FullPath))
+                        System.IO.File.Delete(FullPath);
+                }
+                existingProfile.TBTestAddress = fileUrl;
+
+                _context.Entry(existingProfile).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                return Ok(new { fileUrl });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> DeleteResume(int id)
         {
@@ -307,6 +355,37 @@ namespace Api.Controllers
             }
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> DeleteTbtest(int id)
+        {
+            try
+            {
+                var existingtbtest = await _context.profiles.FindAsync(id);
+                if (existingtbtest == null)
+                {
+                    return NotFound();
+                }
+
+                if (existingtbtest.TBTestAddress != "")
+                {
+                    Uri uri = new Uri(existingtbtest.TBTestAddress);
+                    string filename = Path.GetFileName(uri.LocalPath);
+                    string FullPath = Path.Combine(Directory.GetCurrentDirectory(), "files\\tbtests", filename);
+                    if (System.IO.File.Exists(FullPath))
+                        System.IO.File.Delete(FullPath);
+                }
+                existingtbtest.TBTestAddress = "";
+                _context.Entry(existingtbtest).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         // POST: api/V100/Profiles
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
@@ -321,6 +400,28 @@ namespace Api.Controllers
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetProfile", new { id = profile.ProfileID }, profile);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<int>> PostBackgroundCheck([FromBody] int id)
+        {
+            var existingProfile = await _context.profiles.FindAsync(id);
+            if (existingProfile == null)
+            {
+                return NotFound();
+            }
+            var existingBackgroundCheckRequest = await _context.backgroundCheckRequests.Where(a => a.ProfileID == id).FirstOrDefaultAsync();
+            if(existingBackgroundCheckRequest != null)
+            {
+                _context.backgroundCheckRequests.Remove(existingBackgroundCheckRequest);
+            }
+            BackgroundCheckRequest backgroundCheckRequest = new BackgroundCheckRequest();
+            backgroundCheckRequest.ProfileID = id;
+            backgroundCheckRequest.IsConfirm = 0;
+            backgroundCheckRequest.Message = "Waiting...";
+            _context.backgroundCheckRequests.Add(backgroundCheckRequest);
+            await _context.SaveChangesAsync();
+            return CreatedAtAction("GetProfile", new { id = id });
         }
 
         [HttpPost("{id}")]
@@ -367,6 +468,14 @@ namespace Api.Controllers
         {
             bool isUploaded = false;
             isUploaded = await _context.profiles.Where(a => a.ProfileID == id && a.ResumeAddress != "").CountAsync() > 0;
+            return isUploaded;
+        }
+
+        [HttpGet("{id}")]
+        public async Task<bool> IsUploadedTbtest(int id)
+        {
+            bool isUploaded = false;
+            isUploaded = await _context.profiles.Where(a => a.ProfileID == id && a.TBTestAddress != "").CountAsync() > 0;
             return isUploaded;
         }
 

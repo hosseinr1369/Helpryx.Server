@@ -14,5 +14,6 @@ namespace Api.Models
         public DbSet<Profile> profiles { get; set; }
         public DbSet<Facility> facilities { get; set; }
         public DbSet<FacilityImageList> facilityImageLists { get; set; }
+        public DbSet<BackgroundCheckRequest> backgroundCheckRequests { get; set; }
     }
 }

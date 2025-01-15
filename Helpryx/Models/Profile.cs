@@ -16,6 +16,7 @@ namespace Api.Models
         public string MiddleName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public DateTime Birthday { get; set; } = DateTime.Now;
+        public int Sex { get; set; } = 0;
         public string Status { get; set; } = string.Empty;
         public string ContactNumber { get; set; } = string.Empty;
         public string UserName { get; set; } = string.Empty;
@@ -36,5 +37,9 @@ namespace Api.Models
         public int IsLock { get; set; } = 0;
         public string Message { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
+        public string County { get; set; } = string.Empty;
+        public string ZipCode { get; set; } = string.Empty;
+        public string StreetAddress { get; set; } = string.Empty;
+        public string Race { get; set; } = string.Empty;
     }
 }
