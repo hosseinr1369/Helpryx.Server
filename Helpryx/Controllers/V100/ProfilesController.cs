@@ -418,7 +418,7 @@ namespace Api.Controllers
             BackgroundCheckRequest backgroundCheckRequest = new BackgroundCheckRequest();
             backgroundCheckRequest.ProfileID = id;
             backgroundCheckRequest.IsConfirm = 0;
-            backgroundCheckRequest.Message = "Waiting...";
+            backgroundCheckRequest.Message = "";
             _context.backgroundCheckRequests.Add(backgroundCheckRequest);
             await _context.SaveChangesAsync();
             return CreatedAtAction("GetProfile", new { id = id });

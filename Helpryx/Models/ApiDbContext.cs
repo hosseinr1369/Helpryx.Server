@@ -15,5 +15,8 @@ namespace Api.Models
         public DbSet<Facility> facilities { get; set; }
         public DbSet<FacilityImageList> facilityImageLists { get; set; }
         public DbSet<BackgroundCheckRequest> backgroundCheckRequests { get; set; }
+        public DbSet<Api.Models.UsersFavorit> UsersFavorit { get; set; } = default!;
+        public DbSet<Api.Models.ApplyFacility> ApplyFacility { get; set; } = default!;
+        public DbSet<Family> Families { get; set; }
     }
 }

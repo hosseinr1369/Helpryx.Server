@@ -6,10 +6,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Api.Models;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Api.Controllers.V100
 {
-    [Route("api/[controller]")]
+    [Route("api/V100/[controller]")]
     [ApiController]
     public class FacilityImageListsController : ControllerBase
     {
@@ -108,7 +109,14 @@ namespace Api.Controllers.V100
             {
                 return NotFound();
             }
-
+            if (facilityImageList.ImageName != "" && !facilityImageList.ImageName.IsNullOrEmpty())
+            {
+                Uri uri = new Uri(facilityImageList.ImageName);
+                string imagename = Path.GetFileName(uri.LocalPath);
+                string FullPath = Path.Combine(Directory.GetCurrentDirectory(), "images\\facilities", imagename);
+                if (System.IO.File.Exists(FullPath))
+                    System.IO.File.Delete(FullPath);
+            }
             _context.facilityImageLists.Remove(facilityImageList);
             await _context.SaveChangesAsync();
 

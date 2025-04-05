@@ -5,6 +5,10 @@ VisualStudioVersion = 17.1.32328.378
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api", "Helpryx\Api.csproj", "{435F6391-87AE-42EE-96B2-458A2163380B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminPanel", "AdminPanel\AdminPanel\AdminPanel.csproj", "{295D19BC-F0BC-4396-A713-AAC94037194C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminPanel.Client", "AdminPanel\AdminPanel.Client\AdminPanel.Client.csproj", "{BF1B7FE1-62D9-43CE-9D36-0677830F646D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{435F6391-87AE-42EE-96B2-458A2163380B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{435F6391-87AE-42EE-96B2-458A2163380B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{435F6391-87AE-42EE-96B2-458A2163380B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{295D19BC-F0BC-4396-A713-AAC94037194C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{295D19BC-F0BC-4396-A713-AAC94037194C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{295D19BC-F0BC-4396-A713-AAC94037194C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{295D19BC-F0BC-4396-A713-AAC94037194C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF1B7FE1-62D9-43CE-9D36-0677830F646D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF1B7FE1-62D9-43CE-9D36-0677830F646D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF1B7FE1-62D9-43CE-9D36-0677830F646D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF1B7FE1-62D9-43CE-9D36-0677830F646D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

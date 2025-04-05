@@ -15,9 +15,10 @@ builder.Services.AddDbContext<ApiDbContext>(option => option.UseSqlServer(builde
 //{
 //    options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
 //});
+
+
+
 var app = builder.Build();
-
-
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -37,6 +38,18 @@ app.UseStaticFiles();
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "images", "facilities")),
+    RequestPath = "/images/facilities",
+});
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "images", "facilityprofiles")),
+    RequestPath = "/images/facilityprofiles",
+});
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
         Path.Combine(Directory.GetCurrentDirectory(), "images", "profiles")),
     RequestPath = "/images/profiles",
 });
@@ -48,7 +61,7 @@ app.UseStaticFiles(new StaticFileOptions
 });
 
 //app.UseHttpsRedirection();
-
+//app.UseMiddleware<NullHandlingMiddleware>();
 app.UseAuthorization();
 
 app.MapControllers();

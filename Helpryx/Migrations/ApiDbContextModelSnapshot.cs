@@ -17,10 +17,33 @@ namespace Api.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.36")
+                .HasAnnotation("ProductVersion", "9.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Api.Models.ApplyFacility", b =>
+                {
+                    b.Property<int>("ApplyFacilityID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ApplyFacilityID"));
+
+                    b.Property<int>("FacilityID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProfileID")
+                        .HasColumnType("int");
+
+                    b.HasKey("ApplyFacilityID");
+
+                    b.ToTable("ApplyFacility");
+                });
 
             modelBuilder.Entity("Api.Models.BackgroundCheckRequest", b =>
                 {
@@ -28,7 +51,7 @@ namespace Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BackgroundCheckRequestID"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BackgroundCheckRequestID"));
 
                     b.Property<int>("IsConfirm")
                         .HasColumnType("int");
@@ -51,7 +74,7 @@ namespace Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FacilityID"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FacilityID"));
 
                     b.Property<string>("Caregiver")
                         .IsRequired()
@@ -84,6 +107,9 @@ namespace Api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("IsDelete")
+                        .HasColumnType("int");
+
                     b.Property<int>("IsLock")
                         .HasColumnType("int");
 
@@ -98,6 +124,9 @@ namespace Api.Migrations
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProfileIDPoster")
+                        .HasColumnType("int");
 
                     b.Property<string>("ProfileImage")
                         .IsRequired()
@@ -126,13 +155,17 @@ namespace Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FacilityImageListID"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FacilityImageListID"));
 
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("FacilityID")
                         .HasColumnType("int");
+
+                    b.Property<string>("FacilityUniqueID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageCaption")
                         .IsRequired()
@@ -146,11 +179,69 @@ namespace Api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("IsDelete")
+                        .HasColumnType("int");
+
                     b.HasKey("FacilityImageListID");
 
                     b.HasIndex("FacilityID");
 
                     b.ToTable("facilityImageLists");
+                });
+
+            modelBuilder.Entity("Api.Models.Family", b =>
+                {
+                    b.Property<int>("FamilyID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FamilyID"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClientName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DOB")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Date")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Diagnosis")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("HoursPerWeek")
+                        .HasColumnType("float");
+
+                    b.Property<int>("Insurance")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ServicesRequest")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Sex")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("FamilyID");
+
+                    b.ToTable("Families");
                 });
 
             modelBuilder.Entity("Api.Models.Profile", b =>
@@ -159,7 +250,7 @@ namespace Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProfileID"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProfileID"));
 
                     b.Property<string>("Availability")
                         .IsRequired()
@@ -282,15 +373,32 @@ namespace Api.Migrations
                     b.ToTable("profiles");
                 });
 
+            modelBuilder.Entity("Api.Models.UsersFavorit", b =>
+                {
+                    b.Property<int>("UsersFavoritID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UsersFavoritID"));
+
+                    b.Property<int>("FacilityID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProfileID")
+                        .HasColumnType("int");
+
+                    b.HasKey("UsersFavoritID");
+
+                    b.ToTable("UsersFavorit");
+                });
+
             modelBuilder.Entity("Api.Models.FacilityImageList", b =>
                 {
-                    b.HasOne("Api.Models.Facility", "Facility")
+                    b.HasOne("Api.Models.Facility", null)
                         .WithMany("FacilityImageList")
                         .HasForeignKey("FacilityID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Facility");
                 });
 
             modelBuilder.Entity("Api.Models.Facility", b =>
