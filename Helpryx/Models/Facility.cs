@@ -12,8 +12,13 @@ namespace Api.Models
         public string FacilityName { get; set; } = string.Empty;
         public string TypeFacility { get; set; } = string.Empty;
         public string NPINumber { get; set; } = string.Empty;
+        public string County { get; set; } = string.Empty;
         public string State { get; set; } = string.Empty;
         public string City { get; set; } = string.Empty;
+        public string Region { get; set; } = string.Empty;
+        public string StreetAddress { get; set; } = string.Empty;
+        public string ZipCode { get; set; } = string.Empty;        
+        public string PostalCode { get; set; } = string.Empty;
         public string Coordinate { get; set; } = string.Empty;
         public string PhoneNumber { get; set; } = string.Empty;
         public string EmailAddress { get; set; } = string.Empty;
@@ -23,7 +28,7 @@ namespace Api.Models
         public string ProfileImage { get; set; } = string.Empty;
         public string Message { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public int IsDelete { get; set; } = 0;
+        public int IsDelete { get; set; } = 0;       
         public virtual List<FacilityImageList> FacilityImageList { get; set; } = new List<FacilityImageList>();        
     }
 }

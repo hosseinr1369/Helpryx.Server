@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using Api.Models;
 using Newtonsoft.Json;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Api.Controllers
 {
+    [Authorize]
     [Route("api/V100/[controller]/[action]")]
     [ApiController]
     public class FacilitiesController : ControllerBase
@@ -20,7 +22,14 @@ namespace Api.Controllers
         public FacilitiesController(ApiDbContext context)
         {
             _context = context;
-        }        
+        }
+
+        // GET: api/V100/Facilities
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Facility>>> GetAllfacilities()
+        {
+            return await _context.facilities.ToListAsync();
+        }
 
         // GET: api/V100/Facilities/1/10
         [HttpGet]
@@ -79,8 +88,13 @@ namespace Api.Controllers
                     facility.FacilityName,
                     facility.TypeFacility,
                     facility.NPINumber,
+                    facility.County,
                     facility.State,
                     facility.City,
+                    facility.Region,
+                    facility.StreetAddress,
+                    facility.ZipCode,
+                    facility.PostalCode,
                     facility.Coordinate,
                     facility.PhoneNumber,
                     facility.EmailAddress,
@@ -506,7 +520,7 @@ namespace Api.Controllers
             if(facilityImageLists != null && facilityImageLists.Count > 0)
                 foreach (FacilityImageList item in facilityImageLists)
                 {
-                    if (item.ImageName != "" && !item.ImageName.IsNullOrEmpty())
+                    if (!string.IsNullOrEmpty(item.ImageName) && item.ImageName != "")
                     {
                         Uri uri = new Uri(item.ImageName);
                         string imagename = Path.GetFileName(uri.LocalPath);
@@ -515,7 +529,7 @@ namespace Api.Controllers
                             System.IO.File.Delete(FullPath);
                     }
                 }
-            if (facility.ProfileImage != "" && !facility.ProfileImage.IsNullOrEmpty())
+            if (!string.IsNullOrEmpty(facility.ProfileImage) && facility.ProfileImage != "")
             {
                 Uri uri = new Uri(facility.ProfileImage);
                 string imagename = Path.GetFileName(uri.LocalPath);

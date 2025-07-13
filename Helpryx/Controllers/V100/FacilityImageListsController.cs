@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Api.Models;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Api.Controllers.V100
 {
+    [Authorize]
     [Route("api/V100/[controller]")]
     [ApiController]
     public class FacilityImageListsController : ControllerBase
@@ -109,7 +111,7 @@ namespace Api.Controllers.V100
             {
                 return NotFound();
             }
-            if (facilityImageList.ImageName != "" && !facilityImageList.ImageName.IsNullOrEmpty())
+            if (!string.IsNullOrEmpty(facilityImageList.ImageName) && facilityImageList.ImageName != "")
             {
                 Uri uri = new Uri(facilityImageList.ImageName);
                 string imagename = Path.GetFileName(uri.LocalPath);

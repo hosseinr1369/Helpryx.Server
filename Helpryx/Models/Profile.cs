@@ -22,6 +22,7 @@ namespace Api.Models
         public string UserName { get; set; } = string.Empty;
         public string PasswordHash { get; set; } = string.Empty;
         public string EmailAddress { get; set; } = string.Empty;
+        public string Type { get; set; } = string.Empty;
         public string State { get; set; } = string.Empty;
         public string City { get; set; } = string.Empty;
         public string Region { get; set; } = string.Empty;

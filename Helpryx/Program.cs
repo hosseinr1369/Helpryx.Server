@@ -1,6 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Api.Models;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Api;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,8 +19,38 @@ builder.Services.AddDbContext<ApiDbContext>(option => option.UseSqlServer(builde
 //{
 //    options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
 //});
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
 
 
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    var key = Encoding.UTF8.GetBytes("8ieHTsEqkQIwtSX81hMLY4Q6jNfjP50O01/5iPtqJNo=");
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key)
+    };
+});
+
+builder.Services.AddAuthorization();
+builder.Services.AddControllers();
 
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
@@ -62,8 +96,9 @@ app.UseStaticFiles(new StaticFileOptions
 
 //app.UseHttpsRedirection();
 //app.UseMiddleware<NullHandlingMiddleware>();
+app.UseCors("AllowAll");
+app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

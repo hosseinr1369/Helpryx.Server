@@ -1,14 +1,50 @@
 ﻿using Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using MailKit.Net.Smtp;
+using MailKit.Security;
 using MimeKit;
+using Serilog;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Api.Controllers.V100
 {
+    [Authorize]
     [Route("api/V100/[controller]")]
     [ApiController]
     public class OTPEmailController : ControllerBase
     {
+
+        // POST api/V100/<OTPEmailController>
+        //[HttpPost]
+        //public async Task PostOTPEmailWithMailKit(OTPEmail OTPemail)
+        //{
+        //    if (OTPemail != null)
+        //    {
+        //        try
+        //        {
+        //            var message = new MimeMessage();
+        //            message.From.Add(new MailboxAddress("Carezaar", "info@carezaar.com"));
+        //            message.To.Add(new MailboxAddress("Recipient", OTPemail.EmailTo));
+        //            message.Subject = "Confirm Email Address";
+        //            message.Body = new TextPart("html")
+        //            {
+        //                Text = "Your confirmation code: " + OTPemail.CodeMailed.ToString()
+        //            };
+
+        //            using (var client = new SmtpClient())
+        //            {
+        //                await client.ConnectAsync("accumail3.accuwebhosting.com", 465, SecureSocketOptions.SslOnConnect);
+        //                await client.AuthenticateAsync("info@carezaar.com", "56wOm?78r");
+        //                await client.SendAsync(message);
+        //                await client.DisconnectAsync(true);
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Console.WriteLine($"Error: {ex.Message}");
+        //        }
+        //    }
+        //}
 
         // POST api/V100/<OTPEmailController>
         [HttpPost]
@@ -18,28 +54,35 @@ namespace Api.Controllers.V100
             {
                 try
                 {
+                    string htmlTemplate = System.IO.File.ReadAllText("template.html");
+                    htmlTemplate = htmlTemplate.Replace("@Date", DateTime.Now.ToString("yyyy-MM-dd"))
+                                               .Replace("@Year", DateTime.Now.ToString("yyyy"))
+                                               .Replace("@CodeHere", OTPemail.CodeMailed.ToString());
+
                     var message = new MimeMessage();
-                    message.From.Add(new MailboxAddress("Helpryx", "info@shalizarsoft.ir"));
-                    message.To.Add(new MailboxAddress("Helpryx", OTPemail.EmailTo));
-                    message.Subject = "Confirm Email Address";
+                    message.From.Add(new MailboxAddress("Carezaar", "info@carezaar.com"));
+                    message.To.Add(new MailboxAddress("Recipient", OTPemail.EmailTo));
+                    message.Subject = "Carezaar Confirm Email Address";
                     message.Body = new TextPart("html")
                     {
-                        Text = OTPemail.CodeMailed.ToString()
+                        Text = htmlTemplate
                     };
+
                     using (var client = new SmtpClient())
                     {
-                        await client.ConnectAsync("mail.shalizarsoft.ir", 465, true);
-                        await client.AuthenticateAsync("info@shalizarsoft.ir", "sal14569");
+                        await client.ConnectAsync("accumail3.accuwebhosting.com", 465, SecureSocketOptions.SslOnConnect);
+                        await client.AuthenticateAsync("info@carezaar.com", "56wOm?78r");
                         await client.SendAsync(message);
                         await client.DisconnectAsync(true);
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Email sending failed: {ex.Message}");
-                }                
+                    Console.WriteLine($"Error: {ex.Message}");
+                }
             }
         }
+
 
         //public async Task PostOTPEmail(OTPEmail OTPemail)
         //{

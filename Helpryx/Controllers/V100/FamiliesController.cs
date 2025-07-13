@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Api.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Api.Controllers.V100
 {
+    [Authorize]
     [Route("api/V100/[controller]")]
     [ApiController]
     public class FamiliesController : ControllerBase

@@ -10,9 +10,11 @@ using Api.Models;
 using Newtonsoft.Json;
 using System.Text.Json;
 using System.Runtime.CompilerServices;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Api.Controllers
 {
+    [Authorize]
     [Route("api/V100/[controller]/[action]")]
     [ApiController]
     public class ProfilesController : ControllerBase
@@ -51,6 +53,37 @@ namespace Api.Controllers
             }
 
             return profile;
+        }
+
+        // GET: api/V100/Profiles/5
+        [HttpGet("{profileid}")]
+        public async Task<ActionResult<IEnumerable<Profile>>> GetAppliedProfile(int profileid)
+        {
+            if (_context.profiles == null || _context.facilities == null || _context.ApplyFacility == null)
+                return NotFound();
+
+            var facilitylist = await _context.facilities
+                .Where(a => a.ProfileIDPoster == profileid)
+                .ToListAsync();
+
+            if (facilitylist == null || !facilitylist.Any())
+                return NotFound();
+
+            var applylist = await _context.ApplyFacility
+                .Where(a => facilitylist.Select(f => f.FacilityID).Contains(a.FacilityID))
+                .ToListAsync();
+
+            if (applylist == null || !applylist.Any())
+                return NotFound();
+
+            var profilelist = await _context.profiles
+                .Where(a => applylist.Select(f => f.ProfileID).Contains(a.ProfileID))
+                .ToListAsync();
+
+            if (profilelist == null || profilelist.Count == 0)
+                return NotFound();
+
+            return Ok(profilelist);
         }
 
         // GET: api/V100/Profiles/Email
